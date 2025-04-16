@@ -23,7 +23,4 @@ def show_terapeutas():
     st.title('Cadastrar novo Terapeuta')
     name = st.text_input('Novo Terapeuta')
     if st.button('Cadastrar'):
-       new_terapeuta = t
-       
-       
         st.success(f'Terapeuta de "{name}" cadastrado com sucesso')
