@@ -21,7 +21,7 @@ def main():  # Organizando o código para deixar ele facil de entender
         st.title('ALLOS')
 
         menu_option = st.sidebar.selectbox(  # Criando sidebarselecetbox
-            'Selecione uma opção',
+            'MENU',
             ['Início', 'Relatório Mensal', 'Pacientes', 'Decanos', 'Terapeutas', 'Nucleo']
         )
 

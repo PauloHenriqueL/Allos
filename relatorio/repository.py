@@ -3,36 +3,35 @@ import streamlit as st
 from login.service import logout
 
 
-#  Faça um authetication jwt na url e me traga o access e o refresh
 class RelatorioRepository:
+    BASE_URL = 'http://localhost:8000/api/v1/'
+    STATUS_OK = 200
+    STATUS_CREATED = 201
+    STATUS_UNAUTHORIZED = 401
 
     def __init__(self):
-        self.__base_url = 'http://localhost:8000/api/v1/'
-        self.__relatorio_url = f'{self.__base_url}relatorio'
+        self.__relatorio_url = f'{self.BASE_URL}relatorio'
         self.__headers = {
-            'Authorization' : f'Bearer {st.session_state.token}'
+            'Authorization': f'Bearer {st.session_state.token}'
         }
-    
-    def get_relatorio(self):
-        response = requests.get(
-            self.__relatorio_url,
-            headers=self.__headers,
-        )
-        if response.status_code == 200:
+
+    def __handle_response(self, response):
+        if response.status_code == self.STATUS_OK or response.status_code == self.STATUS_CREATED:
             return response.json()
-        if response.status_code == 401:
-             return logout()
-        raise Exception(f'Erro ao obter dados da API. Status code: {response.status_code}')
-    
-    def create_relatorio(self, relatorio):
-        response = requests.post(
-            self.__relatorio_url,
-            headers=self.__headers,
-            data=relatorio,
-        )
-        if response.status_code == 201:
-            return response.json()
-        if response.status_code == 401:
+        if response.status_code == self.STATUS_UNAUTHORIZED:
             logout()
             return None
-        raise Exception(f'Erro ao obter dados da API. Status code: {response.status_code}')
+        response.raise_for_status()
+
+    def get_relatorio(self):
+        response = requests.get(self.__relatorio_url, headers=self.__headers)
+        return self.__handle_response(response)
+
+    def create_relatorio(self, relatorio):
+        response = requests.post(self.__relatorio_url, headers=self.__headers, json=relatorio)
+        return self.__handle_response(response)
+
+    def get_relatorio_stats(self):
+        stats_url = f'{self.__relatorio_url}stats/'
+        response = requests.get(stats_url, headers=self.__headers)
+        return self.__handle_response(response)

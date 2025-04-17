@@ -8,7 +8,6 @@ from decano.service import DecanoService
 from pacientes.service import PacienteService
 
 def show_relatorio():
-    st.write('Lista Relatorios')
     relatorio_service = RelatorioService()
     relatorios = relatorio_service.get_relatorio()
     
@@ -85,7 +84,7 @@ def show_relatorio():
             decano=decano_names[selected_decano_name],
             paciente=paciente_names[selected_paciente_name],
             Terapeuta=terapeuta_names[selected_terapeuta_name], 
-            data=data,
+            data=data.isoformat(),  # Converte o objeto `date` para string
             sessao_1_realizado=sessao_1_realizado,
             sessao_1_pago=sessao_1_pago,
             sessao_2_realizado=sessao_2_realizado,

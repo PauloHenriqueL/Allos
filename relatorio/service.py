@@ -28,3 +28,6 @@ class RelatorioService:
         )
         return self.relatorio_repository.create_relatorio(relatorio)
         #Envia relatorio para o repository
+
+    def get_relatorio_stats(self):
+        return self.relatorio_repository.get_relatorio_stats()
