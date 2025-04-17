@@ -1,27 +1,37 @@
 import streamlit as st
 import pandas as pd
 from st_aggrid import AgGrid
-from decano.models import Decano
-
+from decano.service import DecanoService
 
 
 def show_decano():
-    st.write('Lista Decanos')
-
-    # Consulta os objetos do modelo decano
-    decanos = Decano.objects.all().values()  # Retorna uma QuerySet como uma lista de dicionários
-
-    # Converte a lista de dicionários em um DataFrame
-    df = pd.DataFrame(decanos)
-
-    # Exibe o DataFrame na tabela AgGrid
-    AgGrid(
-        data=df,
-        reload_data=True,
-        key='decano_grid',    
-    )
+    decano_service = DecanoService()
+    decanos = decano_service.get_decano()
+    
+    if decanos:
+        st.write('Lista Decanos')
+        decano_df = pd.json_normalize(decanos)
+        # Converte a lista de dicionários em um DataFrame
+        # Exibe o DataFrame na tabela AgGrid
+        AgGrid(
+            data=decano_df,
+            reload_data=True,
+            key='decano_grid',    
+        )
+    else:
+        st.warning('Nenhum decano encontrado')
 
     st.title('Cadastrar novo Decano')
-    name = st.text_input('Novo Decano')
+    nome = st.text_input('Nome')
+    email = st.text_input('Email')
+    telefone = st.text_input('Telefone')
     if st.button('Cadastrar'):
-        st.success(f'Decano de "{name}" cadastrado com sucesso')
+        new_decano = decano_service.create_decano(
+            nome=nome,
+            email=email,
+            telefone=telefone,
+        )
+        if new_decano:
+            st.rerun()
+        else:
+            st.error('Verifique os campos')

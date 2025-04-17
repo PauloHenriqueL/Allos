@@ -14,3 +14,9 @@ def login(username, password):
     else:
         st.session_state.token = response.get('access')  # Se der certo, salve o access que foi retornado em session_state
         st.rerun()
+
+
+def logout():
+    for key in st.session_state.key():
+        del st.session_state[key]
+    st.rerun()

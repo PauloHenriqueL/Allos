@@ -1,27 +1,33 @@
 import streamlit as st
 import pandas as pd
 from st_aggrid import AgGrid
-from nucleo.models import Nucleo
-
+from nucleo.service import NucleoService
 
 
 def show_nucleo():
-    st.write('Lista Nucleos')
-
-    # Consulta os objetos do modelo nucleo
-    nucleos = Nucleo.objects.all().values()  # Retorna uma QuerySet como uma lista de dicionários
-
-    # Converte a lista de dicionários em um DataFrame
-    df = pd.DataFrame(nucleos)
-
-    # Exibe o DataFrame na tabela AgGrid
-    AgGrid(
-        data=df,
-        reload_data=True,
-        key='nucleo_grid',    
-    )
+    nucleo_service = NucleoService()
+    nucleos = nucleo_service.get_nucleo()
+    
+    if nucleos:
+        st.write('Lista Nucleos')
+        nucleo_df = pd.json_normalize(nucleos)
+        # Converte a lista de dicionários em um DataFrame
+        # Exibe o DataFrame na tabela AgGrid
+        AgGrid(
+            data=nucleo_df,
+            reload_data=True,
+            key='nucleo_grid',    
+        )
+    else:
+        st.warning('Nenhum nucleo encontrado')
 
     st.title('Cadastrar novo Nucleo')
-    name = st.text_input('Novo Nucleo')
+    nome = st.text_input('Nome')
     if st.button('Cadastrar'):
-        st.success(f'Nucleo de "{name}" cadastrado com sucesso')
+        new_nucleo = nucleo_service.create_nucleo(
+            name=nome,
+        )
+        if new_nucleo:
+            st.rerun()
+        else:
+            st.error('Verifique os campos')

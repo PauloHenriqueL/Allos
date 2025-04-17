@@ -1,24 +1,21 @@
-import streamlit as st
-import requests
+from decano.repository import DecanoRepository
 
 
-
-class DecanoRepository:
+class DecanoService:
+    
     
     def __init__(self):
-        self.__base_url = 'https://localhost:8000/decano/'
-        self.__auth_url = f'{self.__base_url}authentication/token/'
+        self.decano_repository = DecanoRepository()
     
-    def get_token(self, username, password):  # Faça um get token me passando o usuário e a senha e guarde em auth_payload
-        url = "http://localhost:8000/api/v1/authentication/token/"
-        auth_payload = {
-            "username": username,
-            "password": password,
-        }
-        auth_response = requests.post(  # Faça um Post na url __auth_url com os dados do auth_payload
-            url,
-            json=auth_payload
+    def get_decano(self):
+        return self.decano_repository.get_decano()
+    
+    #Monta os dados para enviar para o repository
+    def create_decano(self, nome, email, telefone):
+        decano = dict(
+            nome=nome,
+            email=email,
+            telefone=telefone,
         )
-        if auth_response.status_code == 200:  # Se o status_code for 200 retorne o json
-            return auth_response.json()
-        return {'error': f'Erro ao autentificar. Status code: {auth_response.status_code}'}
+        return self.decano_repository.create_decano(decano)
+        #Envia decano para o repository

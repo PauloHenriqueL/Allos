@@ -8,7 +8,7 @@ class Relatorio(models.Model):  # Cria o model
     decano = models.ForeignKey(Decano, on_delete=models.PROTECT, related_name='relatorio')
     paciente = models.ForeignKey(Paciente, on_delete=models.PROTECT, related_name='relatorio')
     Terapeuta = models.ForeignKey(Terapeuta, on_delete=models.PROTECT, related_name='relatorio')
-    data = models.DateField()
+    data = models.DateField(auto_now=True)
     CHOICES = [
         ('Sim', 'Sim'),
         ('Não', 'Não'),
@@ -22,8 +22,8 @@ class Relatorio(models.Model):  # Cria o model
     sessao_3_pago = models.CharField(max_length=15, choices=CHOICES, default='Não')
     sessao_4_realizado = models.CharField(max_length=15, choices=CHOICES, default='Não')
     sessao_4_pago = models.CharField(max_length=15, choices=CHOICES, default='Não')
-    created_at = models.DateTimeField(auto_now_add=True)  # Insere um time quando cria o campo
-    update_at = models.DateTimeField(auto_now=True)  # Insere um time quando edita o campo
+    created_at = models.DateTimeField(auto_now_add=True)  # Insere uma data quando cria o campo
+    update_at = models.DateTimeField(auto_now=True)  # Insere uma data quando edita o campo
 
     class Meta:  # Ordene por name
         ordering = ['Terapeuta']
